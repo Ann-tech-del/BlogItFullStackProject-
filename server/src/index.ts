@@ -3,14 +3,14 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import authRouter from "./routes/auth.route";
 import blogRouter from "./routes/blog.route";
-import cloudinary from "./utils/cloudinary";
+
 import path from 'path';
 
 const app: Express = express();
 
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "*",
    credentials:true,
   methods: ["POST", "GET", "PUT", "PATCH", "DELETE"]
 }));

@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:4000",
-  withCredentials:true
+  baseURL: "https://blogitfullstackproject-backened-side.onrender.com",
+  withCredentials: true
 });
 
 export default axiosInstance;

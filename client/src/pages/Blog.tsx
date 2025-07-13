@@ -123,7 +123,7 @@ const Blog = () => {
   const getImageUrl = (imagePath: string) => {
     if (!imagePath) return 'https://via.placeholder.com/800x400?text=No+Image';
     if (imagePath.startsWith('http')) return imagePath;
-    return `http://localhost:4000${imagePath}`;
+    return `https://blogitfullstackproject-backened-side.onrender.com${imagePath}`;
   };
 
   if (isLoading) {

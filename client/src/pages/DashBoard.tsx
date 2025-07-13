@@ -137,6 +137,7 @@ const DashBoard = () => {
                     sx={{ 
                       height: '100%',
                       display: 'flex',
+                      widows:"400px",
                       flexDirection: 'column',
                       transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
                       '&:hover': {

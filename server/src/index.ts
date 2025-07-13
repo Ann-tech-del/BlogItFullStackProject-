@@ -24,21 +24,21 @@ app.get("/", (req, res) => {
 
 
 
-app.get('/api/images', async (_req, res) => {
-  try {
-    const result = await cloudinary.search
-      .expression('folder:dev_setups')
-      .sort_by('public_id', 'desc')
-      .max_results(30)
-      .execute();
+// app.get('/api/images', async (_req, res) => {
+//   try {
+//     const result = await cloudinary.search
+//       .expression('folder:dev_setups')
+//       .sort_by('public_id', 'desc')
+//       .max_results(30)
+//       .execute();
 
-    const publicIds: string[] = result.resources.map((file: { public_id: string }) => file.public_id);
-    res.status(200).json(publicIds);
-  } catch (error) {
-    console.error('Cloudinary search error:', error);
-    res.status(500).json({ message: 'Failed to fetch images' });
-  }
-});
+//     const publicIds: string[] = result.resources.map((file: { public_id: string }) => file.public_id);
+//     res.status(200).json(publicIds);
+//   } catch (error) {
+//     console.error('Cloudinary search error:', error);
+//     res.status(500).json({ message: 'Failed to fetch images' });
+//   }
+// });
 
 app.use("/api/auth", authRouter)
 app.use("/api",blogRouter)

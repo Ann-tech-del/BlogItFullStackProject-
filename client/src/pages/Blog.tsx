@@ -16,7 +16,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axiosInstance from '../api/axios'
 import { useUserStore } from '../store/userStore'
-import { Edit, Save, Cancel, ArrowBack } from '@mui/icons-material'
+import { Edit, Save, Cancel, ArrowBack, Delete } from '@mui/icons-material'
 
 interface Blog {
   id: string;
@@ -83,6 +83,21 @@ const Blog = () => {
     onError: (error: any) => {
       setError(error.response?.data?.message || 'Failed to update blog');
       setSuccess('');
+    }
+  });
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: async () => {
+      await axiosInstance.delete(`/api/blogs/${id}`);
+    },
+    onSuccess: () => {
+      setSuccess('Blog deleted successfully!');
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1500);
+    },
+    onError: (error: any) => {
+      setError(error.response?.data?.message || 'Failed to delete blog');
     }
   });
 
@@ -180,13 +195,28 @@ const Blog = () => {
               </Typography>
               
               {isAuthor && !isEditing && (
-                <Button
-                  variant="contained"
-                  startIcon={<Edit />}
-                  onClick={() => setIsEditing(true)}
-                >
-                  Edit Blog
-                </Button>
+                <Stack direction="row" spacing={2}>
+                  <Button
+                    variant="contained"
+                    startIcon={<Edit />}
+                    onClick={() => setIsEditing(true)}
+                  >
+                    Edit Blog
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    startIcon={<Delete />}
+                    onClick={() => {
+                      if (window.confirm('Are you sure you want to delete this blog?')) {
+                        deleteBlogMutation.mutate();
+                      }
+                    }}
+                    disabled={deleteBlogMutation.isPending}
+                  >
+                    {deleteBlogMutation.isPending ? 'Deleting...' : 'Delete Blog'}
+                  </Button>
+                </Stack>
               )}
               
               {isEditing && (

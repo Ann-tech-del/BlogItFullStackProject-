@@ -231,10 +231,42 @@ async function updateBlog(req: Request, res: Response) {
 }
 
 
+async function deleteBlog(req: Request, res: Response) {
+  try {
+    const { id: blogId } = req.params;
+    const { id: userId } = req.user;
+
+    
+    const blog = await client.blog.findFirst({
+      where: {
+        id: blogId,
+        authorId: userId,
+        isDeleted: false
+      }
+    });
+
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found or you don't have permission to delete it" });
+    }
+
+    await client.blog.update({
+      where: { id: blogId },
+      data: { isDeleted: true }
+    });
+
+    res.status(200).json({ message: "Blog deleted successfully" });
+  } catch (error) {
+    console.error('Delete blog error:', error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+
 export { 
   createBlogs, 
   uploadImage, 
   getAllBlogs, 
   getBlogById, 
-  updateBlog 
+  updateBlog, 
+  deleteBlog 
 };

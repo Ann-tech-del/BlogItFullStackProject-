@@ -3,6 +3,8 @@ import LayOut from '../components/LayOut'
 import { Stack, TextField, Typography, Paper, Button, Box, Alert, CircularProgress } from '@mui/material'
 import axiosInstance from '../api/axios'
 import { useMutation } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
+
 
 interface BlogData {
   title: string;
@@ -38,7 +40,7 @@ const CreateBlog = () => {
       console.error('Upload error:', error);
     }
   });
-
+const navigate =useNavigate()
   
   const createBlogMutation = useMutation({
     mutationFn: async (blogData: BlogData) => {
@@ -55,7 +57,7 @@ const CreateBlog = () => {
       setPreviewSource("");
       setSelectedFile(null);
       setError("");
-      
+      navigate('/dashBoard')
     },
     onError: (error) => {
       setError('Failed to create blog. Please try again.');

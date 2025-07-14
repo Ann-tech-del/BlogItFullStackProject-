@@ -14,6 +14,7 @@ interface UserStore {
   user: User | null;
   setUser: (user: User) => void;
   logoutUser: () => void;
+  
 }
 
 const userStore: StateCreator<UserStore> = (set) => {

@@ -65,22 +65,20 @@ async function uploadImage(req: Request, res: Response) {
     }
 
     try {
-      
-      const fileUrl = `/uploads/${req.file.filename}`;
-      
-      console.log('File uploaded successfully:', req.file.filename);
-      
-      
-      res.status(200).json({ 
-        message: "Uploaded successfully",
-        url: fileUrl,
-        imageUrl: fileUrl,
-        filename: req.file.filename
-      });
-    } catch (error) {
-      console.error('File processing error:', error);
-      res.status(500).json({ message: 'Something went wrong' });
-    }
+  const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+  console.log('File uploaded successfully:', req.file.filename);
+
+  res.status(200).json({
+    message: "Uploaded successfully",
+    url: fileUrl,
+    imageUrl: fileUrl,
+    filename: req.file.filename
+  });
+} catch (error) {
+  console.error('File processing error:', error);
+  res.status(500).json({ message: 'Something went wrong' });
+}
+
   });
 }
 

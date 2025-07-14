@@ -9,9 +9,11 @@ import path from 'path';
 const app: Express = express();
 
 
+const allowedOrigin = "https://blog-it-full-stack-project-1wsgbdfj3-ann-tech-dels-projects.vercel.app"; // your Vercel frontend URL
+
 app.use(cors({
-  origin: "*",
-   credentials:true,
+  origin: allowedOrigin,
+  credentials: true,
   methods: ["POST", "GET", "PUT", "PATCH", "DELETE"]
 }));
 app.use(express.json({ limit: '10mb' }));

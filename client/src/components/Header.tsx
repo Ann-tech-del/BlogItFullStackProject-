@@ -1,4 +1,4 @@
-import _React from 'react';
+import _React, { useEffect, useState } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -12,14 +12,20 @@ import {
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { FaBlog } from "react-icons/fa6";
-import { useUserStore } from '../store/userStore';
+import useUserStore from '../store/userStore';
 import { useMutation } from '@tanstack/react-query';
 import axiosInstance from '../api/axios';
 
 const Header = () => {
-  const { user, logoutUser, isLoading } = useUserStore();
+  const { user, logoutUser } = useUserStore();
   const navigate = useNavigate();
   const theme = useTheme();
+  const [hydrated, setHydrated] = useState(false);
+
+  
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -27,15 +33,13 @@ const Header = () => {
       return response.data;
     },
     onSuccess: () => {
-      // Navigate to home page first, then clear client-side state
-      navigate('/');
       logoutUser();
+      navigate('/');
     },
     onError: (error) => {
       console.error('Logout error:', error);
-      // Even if server logout fails, navigate first then clear client state
-      navigate('/');
       logoutUser();
+      navigate('/');
     }
   });
 
@@ -67,45 +71,13 @@ const Header = () => {
         </Typography>
 
         <Stack direction="row" spacing={2} alignItems="center">
-          {isLoading ? (
-            
+          {!hydrated ? (
             <>
               <Skeleton variant="rectangular" width={80} height={32} />
               <Skeleton variant="rectangular" width={80} height={32} />
               <Skeleton variant="rectangular" width={80} height={32} />
             </>
-          ) : !user ? (
-            
-            <>
-              <Button
-                color="inherit"
-                component={Link}
-                to="/"
-                sx={{ fontSize: '1rem', color: theme.palette.text.primary }}
-              >
-                Home
-              </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                component={Link}
-                to="/login"
-                sx={{ fontSize: '1rem' }}
-              >
-                Log In
-              </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                component={Link}
-                to="/signup"
-                sx={{ fontSize: '1rem' }}
-              >
-                Sign Up
-              </Button>
-            </>
-          ) : (
-            
+          ) : user ? (
             <>
               <Button
                 color="inherit"
@@ -147,8 +119,8 @@ const Header = () => {
                   color: theme.palette.text.primary,
                 }}
               >
-                {user.firstName[0].toUpperCase()}
-                {user.lastName[0].toUpperCase()}
+                {user.firstName?.[0]?.toUpperCase()}
+                {user.lastName?.[0]?.toUpperCase()}
               </Avatar>
               <Button
                 variant="contained"
@@ -158,6 +130,35 @@ const Header = () => {
                 sx={{ fontSize: '1rem' }}
               >
                 {logoutMutation.isPending ? 'Logging Out...' : 'Log Out'}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                color="inherit"
+                component={Link}
+                to="/"
+                sx={{ fontSize: '1rem', color: theme.palette.text.primary }}
+              >
+                Home
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                component={Link}
+                to="/login"
+                sx={{ fontSize: '1rem' }}
+              >
+                Log In
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                component={Link}
+                to="/signup"
+                sx={{ fontSize: '1rem' }}
+              >
+                Sign Up
               </Button>
             </>
           )}

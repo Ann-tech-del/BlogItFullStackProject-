@@ -15,7 +15,7 @@ import {
 } from '@mui/material'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axiosInstance from '../api/axios'
-import { useUserStore } from '../store/userStore'
+import useUserStore from '../store/userStore'
 import { Edit, Save, Cancel, ArrowBack, Delete } from '@mui/icons-material'
 
 interface Blog {

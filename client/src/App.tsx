@@ -14,28 +14,12 @@ import theme from './Theme/theme';
 import Protected from './components/Protected';
 import Profile from './pages/Profile';
 import AuthProvider from './components/AuthProvider';
-import { useUserStore } from './store/userStore';
-import { clearAuthStorage, debugStorage } from './utils/clearStorage';
+
 
 const client = new QueryClient()
 
 function App() {
-  const { clearPersistedData } = useUserStore();
-
   
-  useEffect(() => {
-    console.log('App starting - clearing authentication data...');
-    
-    
-    debugStorage();
-    
-    
-    clearAuthStorage();
-    clearPersistedData();
-    
-    console.log('Authentication data cleared on app startup');
-  }, [clearPersistedData]);
-
   return (
     <>
     <QueryClientProvider client={client}>

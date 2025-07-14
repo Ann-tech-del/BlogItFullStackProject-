@@ -15,7 +15,7 @@ import {
 } from '@mui/material'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axiosInstance from '../api/axios'
-import { useUserStore } from '../store/userStore'
+import useUserStore from '../store/userStore'
 import { Visibility, VisibilityOff, Edit, Save, Cancel } from '@mui/icons-material'
 import { Grid } from '@mui/material'
 
@@ -98,7 +98,8 @@ const Profile = () => {
         firstName: updatedProfile.firstName,
         lastName: updatedProfile.lastName,
         email: updatedProfile.email,
-        username: updatedProfile.username
+        username: updatedProfile.username,
+          profileImageUrl: user?.profileImageUrl ?? null
       });
       
       

@@ -13,7 +13,7 @@ import {  useNavigate} from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query';
 import axiosInstance from '../api/axios';
 import axios from 'axios';
-import { useUserStore } from '../store/userStore';
+import useUserStore from '../store/userStore';
 interface LogInDetails{
   identifier:string,
   password : string
@@ -24,7 +24,7 @@ const Login = () => {
   const {setUser} = useUserStore();
 const navigate = useNavigate()
   const [identifier,setIdentifier] = useState("")
-  const [password,setPassoward] = useState("")
+  const [password,setPassward] = useState("")
   const [formError,setFormError]=useState("")
 
   const {isPending,mutate}  = useMutation({
@@ -103,7 +103,7 @@ onSuccess:(data)=>{
             {formError && <Alert severity="error">{formError}</Alert>}
 
             <TextField label="Email or userName" fullWidth required value={identifier} onChange={(e)=>setIdentifier(e.target.value)} />
-            <TextField label="Password" type="password" fullWidth  required  value={password} onChange={(e)=>setPassoward(e.target.value)}/>
+            <TextField label="Password" type="password" fullWidth  required  value={password} onChange={(e)=>setPassward(e.target.value)}/>
             <Button
               variant="contained"
               fullWidth

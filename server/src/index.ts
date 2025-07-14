@@ -9,7 +9,7 @@ import path from 'path';
 const app: Express = express();
 
 
-const allowedOrigin = "https://blog-it-full-stack-project.vercel.app"; // your Vercel frontend URL
+const allowedOrigin = "https://blog-it-full-stack-project.vercel.app";
 
 app.use(cors({
   origin: allowedOrigin,

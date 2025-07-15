@@ -1,86 +1,7 @@
 import { Request, Response } from "express";
 import { client } from "../config/prismaConfig";
-import multer, { FileFilterCallback } from "multer";
-import path from "path";
-import fs from "fs";
-const configureFileStorage = () => {
-  return multer.diskStorage({
-    destination: (req: Request, file: Express.Multer.File, callback: (error: Error | null, destination: string) => void) => {
-      
-      const uploadsFolderPath = path.join(__dirname, '../../uploads');
-      
-      
-      if (!fs.existsSync(uploadsFolderPath)) {
-        fs.mkdirSync(uploadsFolderPath, { recursive: true });
-      }
-      
-      
-      callback(null, uploadsFolderPath);
-    },
-    
-    
-    filename: (req: Request, file: Express.Multer.File, callback: (error: Error | null, filename: string) => void) => {
-      
-      const timestamp = Date.now();
-      const randomNumber = Math.round(Math.random() * 1E9);
-      const fileExtension = path.extname(file.originalname);
-      const uniqueFilename = `${file.fieldname}-${timestamp}-${randomNumber}${fileExtension}`;
-      
-      callback(null, uniqueFilename);
-    }
-  });
-};
 
 
-const multerUpload = multer({
-  storage: configureFileStorage(),
-  limits: {
-    fileSize: 5 * 1024 * 1024 
-  },
-  fileFilter: (req: Request, file: Express.Multer.File, callback: FileFilterCallback) => {
-    
-    if (file.mimetype.startsWith('image/')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Only image files are allowed!'));
-    }
-  }
-}).single('image'); 
-
-async function uploadImage(req: Request, res: Response) {
-  multerUpload(req, res, async (uploadError: any) => {
-    
-    if (uploadError) {
-      console.error('Upload error:', uploadError);
-      return res.status(400).json({ 
-        message: uploadError.message || 'Upload failed' 
-      });
-    }
-
-    
-    if (!req.file) {
-      return res.status(400).json({ 
-        message: 'No file uploaded' 
-      });
-    }
-
-    try {
-  const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-  console.log('File uploaded successfully:', req.file.filename);
-
-  res.status(200).json({
-    message: "Uploaded successfully",
-    url: fileUrl,
-    imageUrl: fileUrl,
-    filename: req.file.filename
-  });
-} catch (error) {
-  console.error('File processing error:', error);
-  res.status(500).json({ message: 'Something went wrong' });
-}
-
-  });
-}
 
 
 async function createBlogs(req: Request, res: Response) {
@@ -262,7 +183,7 @@ async function deleteBlog(req: Request, res: Response) {
 
 export { 
   createBlogs, 
-  uploadImage, 
+ 
   getAllBlogs, 
   getBlogById, 
   updateBlog, 

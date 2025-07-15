@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
- import { UserPayLoad } from "../Types";
+import { UserPayload } from "../Types";
  import  jwt, { VerifyErrors,JwtPayload }  from "jsonwebtoken";
 function verifyUser(req: Request, res: Response, next: NextFunction) {
     const { authToken }= req.cookies
@@ -14,7 +14,7 @@ jwt.verify(authToken,process.env.JWT_SECRET !,(err: VerifyErrors|null ,
             res.status(401).json({message:'unauthorised .Kinly log in'})
             return
         }
-        req.user=decoded as UserPayLoad
+        req.user=decoded as UserPayload
         next();
     }) 
  

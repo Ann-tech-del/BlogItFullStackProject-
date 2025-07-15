@@ -1,20 +1,18 @@
-export interface UserPayLoad {
+
+export {};
+export interface UserPayload {
   id: string;
   firstName: string;
   lastName: string;
-  email: string;
   username: string;
-  isDeleted: Boolean;
+  email: string;
+  isDeleted: boolean;
 }
-
-import { File as MulterFile } from 'multer';
 
 declare global {
   namespace Express {
     interface Request {
-      user: UserPayLoad;
-      file?: MulterFile;
-      files?: MulterFile[];
+      user: UserPayload;
     }
   }
 }

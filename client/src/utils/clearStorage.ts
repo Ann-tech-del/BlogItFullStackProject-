@@ -1,17 +1,12 @@
 
 export const clearAuthStorage = () => {
   if (typeof window !== 'undefined') {
-    
     localStorage.removeItem('user-storage');
-    
-    
     localStorage.removeItem('auth-token');
     localStorage.removeItem('user-data');
-    
     console.log(' Authentication storage cleared successfully');
   }
 };
-
 
 export const debugStorage = () => {
   if (typeof window !== 'undefined') {

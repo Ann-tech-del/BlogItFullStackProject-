@@ -5,7 +5,6 @@ import axiosInstance from '../api/axios'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 
-
 interface BlogData {
   title: string;
   synopsis: string;
@@ -22,26 +21,27 @@ const CreateBlog = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string>("")
 
-  
+  const navigate = useNavigate();
+
   const uploadImageMutation = useMutation({
-    mutationFn: async (file: File) => {
+    mutationFn: async (imageFile: File) => {
       const formData = new FormData();
-      formData.append('image', file);
-      
-      const response = await axiosInstance.post('/api/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      return response.data;
+      formData.append("file", imageFile);
+      formData.append("upload_preset", "blogimages");
+      formData.append("cloud_name", "dofekmtxb");
+
+      const res = await axiosInstance.post(
+        "https://api.cloudinary.com/v1_1/dofekmtxb/image/upload",
+        formData
+      );
+      return res.data;
     },
     onError: (error) => {
       setError('Failed to upload image. Please try again.');
       console.error('Upload error:', error);
     }
   });
-const navigate =useNavigate()
-  
+
   const createBlogMutation = useMutation({
     mutationFn: async (blogData: BlogData) => {
       const response = await axiosInstance.post('/api/blogs', blogData);
@@ -49,7 +49,6 @@ const navigate =useNavigate()
     },
     onSuccess: (data) => {
       console.log('Blog created successfully:', data);
-      
       setTitle("");
       setSynopsis("");
       setContent("");
@@ -68,18 +67,14 @@ const navigate =useNavigate()
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      
       if (!file.type.startsWith('image/')) {
         setError('Please select an image file.');
         return;
       }
-      
-      
       if (file.size > 5 * 1024 * 1024) {
         setError('Image size should be less than 5MB.');
         return;
       }
-
       setSelectedFile(file);
       setFileInputState(e.target.value);
       setError("");
@@ -100,8 +95,6 @@ const navigate =useNavigate()
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
-
-    
     if (!title.trim()) {
       setError('Title is required.');
       return;
@@ -114,27 +107,20 @@ const navigate =useNavigate()
       setError('Content is required.');
       return;
     }
-
     try {
       let imageUrl = "";
-      
-      
       if (selectedFile) {
         const uploadResult = await uploadImageMutation.mutateAsync(selectedFile);
-        imageUrl = uploadResult.url || uploadResult.imageUrl || "";
+        imageUrl = uploadResult.secure_url || uploadResult.url || uploadResult.imageUrl || "";
       }
-
-      
       const blogData: BlogData = {
         title: title.trim(),
         synopsis: synopsis.trim(),
         content: content.trim(),
         ...(imageUrl && { imageUrl })
       };
-
       await createBlogMutation.mutateAsync(blogData);
     } catch (error) {
-      
     }
   };
 
@@ -147,7 +133,6 @@ const navigate =useNavigate()
           <Typography variant='h2' sx={{ alignSelf: 'center', mb: 3 }}>
             Create Your Blog
           </Typography>
-          
           <Paper elevation={6} sx={{ p: 5, width: '50%', maxWidth: '600px' }}>
             <form onSubmit={handleSubmit}>
               <Stack spacing={3}>
@@ -156,8 +141,6 @@ const navigate =useNavigate()
                     {error}
                   </Alert>
                 )}
-
-                
                 <Box>
                   <Typography variant="h6" gutterBottom>
                     Blog Image (Optional)
@@ -185,8 +168,6 @@ const navigate =useNavigate()
                     </Box>
                   )}
                 </Box>
-
-                
                 <TextField
                   label='Title'
                   type='text'
@@ -196,7 +177,6 @@ const navigate =useNavigate()
                   required
                   fullWidth
                 />
-                
                 <TextField
                   label='Synopsis'
                   type='text'
@@ -208,7 +188,6 @@ const navigate =useNavigate()
                   multiline
                   rows={2}
                 />
-                
                 <TextField
                   label="Content"
                   multiline
@@ -219,7 +198,6 @@ const navigate =useNavigate()
                   required
                   fullWidth
                 />
-
                 <Button
                   type='submit'
                   variant='contained'

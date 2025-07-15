@@ -16,7 +16,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axiosInstance from '../api/axios'
 import useUserStore from '../store/userStore'
-import { Edit, Save, Cancel, ArrowBack, Delete } from '@mui/icons-material'
+import { Edit,  Cancel, ArrowBack, Delete } from '@mui/icons-material'
 
 interface Blog {
   id: string;
@@ -24,6 +24,7 @@ interface Blog {
   synopsis: string;
   content: string;
   featuredImage: string;
+  imageUrl?: string;
   createdAt: string;
   updatedAt: string;
   author: {
@@ -39,8 +40,7 @@ const Blog = () => {
   const navigate = useNavigate();
   const { user } = useUserStore();
   const queryClient = useQueryClient();
-  
-  
+
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     title: '',
@@ -50,7 +50,6 @@ const Blog = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  
   const { data: blog, isLoading, error: fetchError } = useQuery({
     queryKey: ['blog', id],
     queryFn: async (): Promise<Blog> => {
@@ -59,7 +58,6 @@ const Blog = () => {
     },
     enabled: !!id
   });
-
 
   const updateBlogMutation = useMutation({
     mutationFn: async (data: { title: string; synopsis: string; content: string }) => {
@@ -70,14 +68,8 @@ const Blog = () => {
       setSuccess('Blog updated successfully!');
       setError('');
       setIsEditing(false);
-      
-      
       queryClient.setQueryData(['blog', id], updatedBlog);
-      
-      
       queryClient.invalidateQueries({ queryKey: ['blogs'] });
-      
-      
       setTimeout(() => setSuccess(''), 3000);
     },
     onError: (error: any) => {
@@ -101,7 +93,6 @@ const Blog = () => {
     }
   });
 
-  
   useEffect(() => {
     if (blog) {
       setEditForm({
@@ -123,7 +114,6 @@ const Blog = () => {
     setIsEditing(false);
     setError('');
     setSuccess('');
-    
     if (blog) {
       setEditForm({
         title: blog.title,
@@ -134,12 +124,6 @@ const Blog = () => {
   };
 
   const isAuthor = user && blog && user.username === blog.author.username;
-
-  const getImageUrl = (imagePath: string) => {
-    if (!imagePath) return 'https://via.placeholder.com/800x400?text=No+Image';
-    if (imagePath.startsWith('http')) return imagePath;
-    return `https://blogitfullstackproject-backened-side.onrender.com${imagePath}`;
-  };
 
   if (isLoading) {
     return (
@@ -178,7 +162,6 @@ const Blog = () => {
     <Box bgcolor={'#F3F2E7'} minHeight="100vh">
       <LayOut>
         <Box sx={{ p: 4, maxWidth: '1200px', mx: 'auto' }}>
-         
           <Button
             startIcon={<ArrowBack />}
             onClick={() => navigate('/dashboard')}
@@ -186,14 +169,11 @@ const Blog = () => {
           >
             Back to Dashboard
           </Button>
-
           <Paper elevation={6} sx={{ p: 4 }}>
-           
             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 3 }}>
               <Typography variant="h3" sx={{ fontWeight: 'bold', color: '#2c3e50' }}>
                 {isEditing ? 'Edit Blog' : blog.title}
               </Typography>
-              
               {isAuthor && !isEditing && (
                 <Stack direction="row" spacing={2}>
                   <Button
@@ -218,13 +198,11 @@ const Blog = () => {
                   </Button>
                 </Stack>
               )}
-              
               {isEditing && (
                 <Stack direction="row" spacing={1}>
                   <Button
                     variant="contained"
                     color="success"
-                    startIcon={<Save />}
                     onClick={handleEditSubmit}
                     disabled={updateBlogMutation.isPending}
                   >
@@ -241,25 +219,20 @@ const Blog = () => {
                 </Stack>
               )}
             </Stack>
-
-           
             {success && (
               <Alert severity="success" sx={{ mb: 3 }}>
                 {success}
               </Alert>
             )}
-
             {error && (
               <Alert severity="error" sx={{ mb: 3 }}>
                 {error}
               </Alert>
             )}
-
-           
-            {blog.featuredImage && (
+            {blog.imageUrl && (
               <Box sx={{ mb: 4, textAlign: 'center' }}>
                 <img
-                  src={getImageUrl(blog.featuredImage)}
+                  src={blog.imageUrl}
                   alt={blog.title}
                   style={{
                     maxWidth: '100%',
@@ -271,20 +244,16 @@ const Blog = () => {
                 />
               </Box>
             )}
-
-          
             {isEditing ? (
               <form onSubmit={handleEditSubmit}>
                 <Stack spacing={3}>
                   <TextField
-                    label="Title"
                     value={editForm.title}
                     onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
                     fullWidth
                     required
                     variant="outlined"
                   />
-                  
                   <TextField
                     label="Synopsis"
                     value={editForm.synopsis}
@@ -295,7 +264,6 @@ const Blog = () => {
                     rows={3}
                     variant="outlined"
                   />
-                  
                   <TextField
                     label="Content"
                     value={editForm.content}
@@ -310,19 +278,14 @@ const Blog = () => {
               </form>
             ) : (
               <Stack spacing={4}>
-               
                 <Typography variant="h6" color="text.secondary" sx={{ fontStyle: 'italic' }}>
                   {blog.synopsis}
                 </Typography>
-
-                
                 <Typography variant="body1" sx={{ lineHeight: 1.8, fontSize: '1.1rem' }}>
                   {blog.content}
                 </Typography>
               </Stack>
             )}
-
-           
             <Box sx={{ mt: 4, pt: 3, borderTop: '1px solid #e0e0e0' }}>
               <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" gap={2}>
                 <Stack direction="row" alignItems="center" spacing={2}>
@@ -339,7 +302,6 @@ const Blog = () => {
                     </Typography>
                   </Box>
                 </Stack>
-                
                 <Stack direction="row" spacing={1}>
                   <Chip
                     label={`Created: ${new Date(blog.createdAt).toLocaleDateString()}`}

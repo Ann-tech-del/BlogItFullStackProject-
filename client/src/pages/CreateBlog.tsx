@@ -27,11 +27,11 @@ const CreateBlog = () => {
     mutationFn: async (imageFile: File) => {
       const formData = new FormData();
       formData.append("file", imageFile);
-      formData.append("upload_preset", "blogimages");
-      formData.append("cloud_name", "dofekmtxb");
+      formData.append("upload_preset", "blogit_preset");
+      formData.append("cloud_name", "dltynolf6");
 
       const res = await axiosInstance.post(
-        "https://api.cloudinary.com/v1_1/dofekmtxb/image/upload",
+        "https://api.cloudinary.com/v1_1/dltynolf6/image/upload",
         formData
       );
       return res.data;

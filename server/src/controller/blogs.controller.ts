@@ -21,6 +21,55 @@ async function createBlogs(req: Request, res: Response) {
   }
 }
 
+async function getAllBlogs(req: Request, res: Response) {
+  try {
+    const blogs = await client.blog.findMany({
+      where: { isDeleted: false },
+      include: {
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            username: true
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.status(200).json(blogs);
+  } catch (error) {
+    console.error('Get blogs error:', error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+async function getBlogById(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const blog = await client.blog.findFirst({
+      where: { id, isDeleted: false },
+      include: {
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            username: true
+          }
+        }
+      }
+    });
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+    res.status(200).json(blog);
+  } catch (error) {
+    console.error('Get blog error:', error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
 async function updateBlog(req: Request, res: Response) {
   try {
     const { id: blogId } = req.params;
@@ -89,4 +138,4 @@ async function deleteBlog(req: Request, res: Response) {
   }
 }
 
-export { createBlogs, updateBlog, deleteBlog }
+export { createBlogs, getAllBlogs, getBlogById, updateBlog, deleteBlog }

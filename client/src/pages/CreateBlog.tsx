@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import LayOut from '../components/LayOut'
 import { Stack, TextField, Typography, Paper, Button, Box, Alert, CircularProgress } from '@mui/material'
 import axiosInstance from '../api/axios'
+import axios from 'axios'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 
@@ -30,7 +31,7 @@ const CreateBlog = () => {
       formData.append("upload_preset", "blogit_preset");
       formData.append("cloud_name", "dltynolf6");
 
-      const res = await axiosInstance.post(
+      const res = await axios.post(
         "https://api.cloudinary.com/v1_1/dltynolf6/image/upload",
         formData
       );
